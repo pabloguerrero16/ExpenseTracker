@@ -32,6 +32,15 @@ public class ExpenseServiceImpl implements ExpenseService{
         return expenseRepository.save(expense);
     }
 
+    public Expense updateExpense(Long id, ExpenseDTO expenseDTO){
+        Optional<Expense> optionalExpense = expenseRepository.findById(id);
+        if(optionalExpense.isPresent()){
+            return updateOrSaveExpense(optionalExpense.get(), expenseDTO);
+        }else{
+            throw new EntityNotFoundException("Could not found Expense with ID: "+id);
+        }
+    }
+
     public List<Expense> getAllExpenses(){
         return expenseRepository.findAll()
                 .stream()
@@ -44,7 +53,16 @@ public class ExpenseServiceImpl implements ExpenseService{
         if(optionalExpense.isPresent()){
             return optionalExpense.get();
         } else {
-            throw new EntityNotFoundException("Expense not present in the Database. Id: " + id);
+            throw new EntityNotFoundException("Could not found Expense with ID: " + id);
+        }
+    }
+
+    public void deleteExpense(Long id){
+        Optional<Expense> optionalExpense = expenseRepository.findById(id);
+        if(optionalExpense.isPresent()){
+            expenseRepository.deleteById(id);
+        } else {
+            throw new EntityNotFoundException("Could not found Expense with ID: " + id);
         }
     }
 }
